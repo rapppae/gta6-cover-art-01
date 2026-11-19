@@ -3,20 +3,82 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cover Snap</title>
+<title>Vice City Cover Maker</title>
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 <main class="app">
-  <section class="controls">
-    <h1>Cover Snap</h1>
-    <p>A photo and a caption, made into a square cover.</p>
-    <label>Photo <input id="photo" type="file" accept="image/*"></label>
-    <label>Caption <input id="caption" type="text" maxlength="40" value="Sunset Heist"></label>
-    <button id="export" type="button">Export PNG 1080 x 1080</button>
-    <p id="status" role="status"></p>
+  <section class="panel controls" aria-label="Cover controls">
+    <header>
+      <h1>Vice City<br>Cover Maker</h1>
+      <p>Turn any photo into multi-panel GTA-style cover art. Drop a photo in, pick a layout, write a caption, export a PNG.</p>
+    </header>
+
+    <div class="group">
+      <h2>1 · Photos</h2>
+      <label class="file-label">Choose a photo from your machine
+        <input id="photoFile" type="file" accept="image/*">
+      </label>
+      <p class="hint">Or drag a photo onto the preview. Click a panel in the preview to pick which one it fills.</p>
+      <div class="row">
+        <button id="fillAll" type="button">Use for all panels</button>
+        <button id="samplePier" type="button">Sample: Pier</button>
+        <button id="sampleBoulevard" type="button">Sample: Boulevard</button>
+      </div>
+      <div class="row" id="panelPicker" aria-label="Pick a panel to edit"></div>
+    </div>
+
+    <div class="group">
+      <h2>2 · Layout</h2>
+      <div class="row" id="layoutPicker">
+        <button type="button" data-layout="2">2 panels</button>
+        <button type="button" data-layout="3" class="active">3 panels</button>
+        <button type="button" data-layout="4">4 panels</button>
+      </div>
+      <label>Zoom selected panel
+        <input id="zoom" type="range" min="1" max="3" step="0.05" value="1">
+      </label>
+      <div class="row">
+        <button id="recenter" type="button">Re-centre photo</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>3 · Caption</h2>
+      <label>Caption
+        <input id="caption" type="text" maxlength="34" value="Sunset Heist">
+      </label>
+      <label>Lettering size
+        <input id="captionSize" type="range" min="0.7" max="1.4" step="0.05" value="1">
+      </label>
+      <div class="row" id="colorPicker" aria-label="Caption colour">
+        <button type="button" data-color="#ffffff" class="swatch active" style="--c:#ffffff" aria-label="White"></button>
+        <button type="button" data-color="#ffd319" class="swatch" style="--c:#ffd319" aria-label="Yellow"></button>
+        <button type="button" data-color="#ff5e78" class="swatch" style="--c:#ff5e78" aria-label="Pink"></button>
+        <button type="button" data-color="#00e5ff" class="swatch" style="--c:#00e5ff" aria-label="Cyan"></button>
+      </div>
+      <div class="row" id="captionPos">
+        <button type="button" data-pos="bottom" class="active">Caption at bottom</button>
+        <button type="button" data-pos="top">Caption at top</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>4 · Export</h2>
+      <div class="row" id="sizePicker">
+        <button type="button" data-size="1080x1080">1080 × 1080</button>
+        <button type="button" data-size="1080x1350">1080 × 1350</button>
+        <button type="button" data-size="1920x1080" class="active">1920 × 1080</button>
+      </div>
+      <button id="export" type="button" class="export-btn">Export PNG</button>
+      <p id="status" role="status"></p>
+    </div>
   </section>
-  <canvas id="cover" width="1080" height="1080" aria-label="The cover"></canvas>
+
+  <section class="stage" aria-label="Live cover preview">
+    <canvas id="cover" width="1920" height="1080"></canvas>
+    <p class="stage-hint">Drag a photo inside a panel to move it · click a panel to select it</p>
+  </section>
 </main>
 <script type="module" src="./src/main.js"></script>
 </body>

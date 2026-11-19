@@ -1,12 +1,125 @@
-html, body { margin: 0; height: 100%; background: #f2f0f4; color: #1d1b22; font: 15px/1.4 system-ui, sans-serif; }
-.app { display: flex; gap: 32px; align-items: center; justify-content: center; height: 100%; padding: 24px; box-sizing: border-box; }
-.controls { display: flex; flex-direction: column; gap: 14px; width: 280px; }
-.controls h1 { margin: 0; font-size: 28px; }
-.controls p { margin: 0; color: #5c5866; }
-label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
-input[type=text] { font: inherit; padding: 8px; border: 1px solid #c9c4d1; border-radius: 6px; }
-button { font: inherit; font-weight: 700; padding: 10px; border: 0; border-radius: 6px; background: #1d1b22; color: #fff; cursor: pointer; }
-canvas { width: min(70vh, 60vw); height: min(70vh, 60vw); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); }
-body.shot-cover .controls { display: none; }
-body.shot-cover .app { padding: 0; }
-body.shot-cover canvas { width: 100vw; height: 100vh; box-shadow: none; }
+/* Vice City Cover Maker: dark neon editor shell. All colours are plain CSS values;
+   the cover art itself is drawn on canvas in src/cover.js. */
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  background: #14081f;
+  color: #f4eefc;
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.app {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px;
+  min-height: 100vh;
+}
+.controls {
+  width: 320px;
+  flex: 0 0 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: linear-gradient(160deg, #241031, #170a24);
+  border: 1px solid #4b2358;
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+.controls h1 {
+  margin: 0 0 6px;
+  font-family: Impact, "Arial Black", "Franklin Gothic Medium", sans-serif;
+  font-size: 34px;
+  line-height: 0.95;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #ffd319 0%, #ff5e78 55%, #b537f2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.controls header p { margin: 0; color: #c9b8d8; font-size: 14px; }
+.group { border-top: 1px solid #3d1e4d; padding-top: 10px; }
+.group h2 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ff8fb0;
+}
+label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 13px; }
+.hint { margin: 8px 0 0; color: #a48fb5; font-size: 12.5px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+button {
+  font: inherit;
+  font-weight: 700;
+  padding: 9px 12px;
+  border: 1px solid #5b2f6e;
+  border-radius: 8px;
+  background: #2c1540;
+  color: #f4eefc;
+  cursor: pointer;
+}
+button:hover { background: #3d1e57; }
+button.active { background: #ff5e78; border-color: #ff5e78; color: #fff; }
+input[type="text"] {
+  font: inherit;
+  padding: 9px 10px;
+  border: 1px solid #5b2f6e;
+  border-radius: 8px;
+  background: #1c0d29;
+  color: #fff;
+}
+input[type="range"] { width: 100%; accent-color: #ff5e78; }
+.file-label input { margin-top: 2px; }
+.swatch {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  background: var(--c);
+}
+.swatch.active { border-color: #fff; box-shadow: 0 0 0 3px #ff5e78; }
+.export-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px;
+  font-size: 17px;
+  background: linear-gradient(90deg, #ff5e78, #b537f2);
+  border: 0;
+}
+.export-btn:hover { filter: brightness(1.12); }
+#status { min-height: 20px; margin: 8px 0 0; color: #8fe3c0; font-size: 13px; }
+.stage { flex: 1 1 auto; max-width: 1100px; }
+#cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px #4b2358;
+  cursor: grab;
+  touch-action: none;
+}
+#cover.dragging { cursor: grabbing; }
+.stage-hint { color: #a48fb5; font-size: 13px; text-align: center; }
+#panelPicker button { min-width: 44px; }
+#panelPicker button.selected { outline: 2px solid #00e5ff; }
+
+/* Shot mode: the cover alone, edge to edge, for deterministic screenshots. */
+body.shot-cover .controls, body.shot-cover .stage-hint { display: none; }
+body.shot-cover .app { padding: 0; gap: 0; }
+body.shot-cover .stage { max-width: none; width: 100vw; }
+body.shot-cover #cover {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  border-radius: 0;
+  box-shadow: none;
+  background: #14081f;
+}
+@media (max-width: 900px) {
+  .app { flex-direction: column; }
+  .controls { width: 100%; flex-basis: auto; }
+}
